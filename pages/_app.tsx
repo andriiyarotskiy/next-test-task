@@ -1,5 +1,4 @@
 import {wrapper} from "../store/store";
-import Index from "./index";
 import React from "react";
 
 const MyApp = ({Component, pageProps}) => {

@@ -12,5 +12,11 @@ export const API = {
     },
     getPost(id: number) {
         return instance.get(`posts/${id}?_embed=comments`);
-    }
+    },
+    createPost(body) {
+        return instance.post(`posts`, body);
+    },
+    deletePost(id) {
+        return instance.delete(`posts/${id}`);
+    },
 }

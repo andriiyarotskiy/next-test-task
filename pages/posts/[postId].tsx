@@ -1,5 +1,4 @@
 import {NextRouter, useRouter} from "next/router";
-import Link from "next/link";
 import React, {useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {getUserPostTC} from "../../store/postsReducer";
