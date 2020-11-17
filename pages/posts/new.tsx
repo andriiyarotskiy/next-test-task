@@ -1,7 +1,6 @@
 import {useDispatch} from "react-redux";
 import React, {useState} from "react";
 import {createPostTC} from "../../store/mainReducer";
-import Router from "next/router";
 import BlogWrapper from "../../components/BlogWrapper";
 import {Button, Input, TextField} from "@material-ui/core";
 import styled from "styled-components";

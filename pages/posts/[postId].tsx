@@ -12,6 +12,9 @@ import Grid from '@material-ui/core/Grid';
 import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
 
+import styled from "styled-components";
+import {CssBaseline} from "@material-ui/core";
+
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
@@ -27,6 +30,24 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
+const Container = styled.div`
+  min-width: 400px;
+  display: flex;
+  align-items: center;
+  margin: 50px auto 30px auto;
+  padding: 15px;
+  height: 100px;
+  background: aquamarine;
+  border-radius: 5px;
+  @media (max-width: 600px) {
+    width: 100%;
+  }
+`
+const Title = styled.h2`
+    font-size: 20px;
+    margin-left: 15px;
+`
+// TYPES
 export type PostType = {
     title: string
     body: string
@@ -34,10 +55,11 @@ export type PostType = {
 }
 
 const Post = React.memo(() => {
+
     const classes = useStyles();
 
     const router: NextRouter = useRouter()
-    const post = useSelector<AppRootStateType, any>(state => state.posts.post)
+    const post = useSelector<AppRootStateType, any>(state => state.post.post)
     const dispatch = useDispatch()
 
     // router ID
@@ -50,22 +72,20 @@ const Post = React.memo(() => {
     console.log(post)
     return (
         <BlogWrapper>
+            <CssBaseline/>
             <Grid
                 container
                 direction="column"
                 justify="flex-start"
                 alignItems="stretch"
             >
+                <Container>
+                    <Avatar>W</Avatar>
 
-                <Paper className={classes.paper}>
-                    <Grid container zeroMinWidth wrap="nowrap" spacing={2}>
-                            <Avatar>W</Avatar>
-                        <Grid item xs zeroMinWidth>
-                            <Typography noWrap>{post.title}</Typography>
-                        </Grid>
-                    </Grid>
-                </Paper>
-                              {/*  <Typography gutterBottom variant="h5" component="h2">
+                            <Title>{post.title}</Title>
+
+                </Container>
+                {/*  <Typography gutterBottom variant="h5" component="h2">
                                     {post.title}
                                 </Typography>*/}
                 {post.comments && post.comments.map(comment => {
@@ -84,6 +104,7 @@ const Post = React.memo(() => {
     )
 })
 
+Post.displayName = 'Post';
 export default Post;
 
 // <h2>{post.title}</h2>

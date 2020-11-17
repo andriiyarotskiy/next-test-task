@@ -8,7 +8,7 @@ let initialState = {
     post: {}
 }
 
-const postsReducer = (state: InitialStateType = initialState, action: ActionsTypes): InitialStateType => {
+const postReducer = (state: InitialStateType = initialState, action: ActionsTypes): InitialStateType => {
     switch (action.type) {
         case 'SET-USER-POST': {
             return {...state, post: action.post}
@@ -33,4 +33,4 @@ export const getUserPostTC = (id: string | string[]) => async (dispatch: Dispatc
 }
 
 
-export default postsReducer;
+export default postReducer;

@@ -1,4 +1,4 @@
-import postsReducer from "./postsReducer";
+import postReducer from "./postsReducer";
 import {applyMiddleware, combineReducers, createStore} from "redux";
 import {Context, createWrapper, MakeStore} from "next-redux-wrapper";
 import mainReducer from "./mainReducer";
@@ -6,7 +6,7 @@ import thunk from "redux-thunk";
 
 const rootReducer = combineReducers({
     main: mainReducer,
-    posts: postsReducer,
+    post: postReducer,
 })
 
 const makeStore: MakeStore<AppRootStateType> = (context: Context) => createStore(rootReducer, applyMiddleware(thunk));
