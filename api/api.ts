@@ -22,7 +22,7 @@ export const API = {
     },
 }
 
-
+//Types
 export type CommentsType = {
     postId: number
     body: string
@@ -35,3 +35,5 @@ export type PostType<T> = {
     id: number
     comments?: Array<T>
 }
+
+export type RequestStatusType = "idle" | "loading" | "succeeded" | "failed"
