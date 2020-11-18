@@ -3,92 +3,96 @@ import {useDispatch, useSelector} from "react-redux";
 import {deletePostTC, fetchPostsTC} from "../store/mainReducer";
 import {AppRootStateType} from "../store/store";
 import Link from "next/link";
-import {PostType} from "./posts/[postId]";
 import BlogWrapper from "../components/BlogWrapper";
-import Button from '@material-ui/core/Button';
-import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
-import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
+import {Box, Button, Card, CardActions, CardContent, CardMedia, Container, Grid, Typography} from "@material-ui/core";
 import {makeStyles} from '@material-ui/core/styles';
-import Container from '@material-ui/core/Container';
+import {PostType} from "../api/api";
 
 
-const Index = () => {
+const Blog = () => {
+    const classes = useStyles();
 
-    const classes = useStyles(); // Material styles
-
-    const posts = useSelector<AppRootStateType, any>(state => state.main.posts)
+    const posts = useSelector<AppRootStateType, Array<PostType<{}>>>(state => state.main.posts)
     const dispatch = useDispatch()
-
-
-    console.log(posts.length)
 
     useEffect(() => {
         dispatch(fetchPostsTC())
     }, [dispatch])
 
+
     const deletePost = (id) => {
         dispatch(deletePostTC(id))
+    }
+    // Slice Long Text in card
+    const sliceLongText = (str: string) => {
+        if (str.length > 12) {
+            return str.slice(0, 12) + ' ...'
+        } else {
+            return str
+        }
     }
 
     return (
         <BlogWrapper>
-            {/* Hero unit */}
-            <div>
-                <Container maxWidth="sm">
-                    <Typography component="h1" variant="h2" align="center" color="textPrimary" gutterBottom>
-                        Posts
-                    </Typography>
+            <>
+                <div>
+                    <Container maxWidth="sm">
+                       <Box mt={5}>
+                           <Typography component="h1" variant="h2" align="center" color="textPrimary" gutterBottom>
+                               Posts
+                           </Typography>
+                       </Box>
+                        <Typography component="h5" variant="h5" align="center" color="textPrimary" gutterBottom>
+                            Example how i first wrote code on next.js.
+                        </Typography>
+                    </Container>
+                </div>
+                <Container className={classes.cardGrid} maxWidth="md">
+                    <Grid container spacing={4}>
+                        {posts && posts.map((post) => (
+                            <Grid item key={post.id} xs={12} sm={6} md={4}>
+                                <Card className={classes.card}>
+                                    <CardMedia
+                                        className={classes.cardMedia}
+                                        image="https://source.unsplash.com/random"
+                                        title={`${post.title}`}
+                                    />
+                                    <CardContent className={classes.cardContent}>
+                                        <Typography gutterBottom variant="h5" component="h2">
+                                            {post.title && sliceLongText(post.title)}
+                                        </Typography>
 
-                    <Typography component="h5" variant="h5" align="center" color="textPrimary" gutterBottom>
-                        Example how i first wrote code on next.js.
-                    </Typography>
-
-                </Container>
-            </div>
-            <Container className={classes.cardGrid} maxWidth="md">
-                {/* End hero unit */}
-                <Grid container spacing={4}>
-                    {posts.map((post: PostType) => (
-                        <Grid item key={post.id} xs={12} sm={6} md={4}>
-                            <Card className={classes.card}>
-                                <CardMedia
-                                    className={classes.cardMedia}
-                                    image="https://source.unsplash.com/random"
-                                    title={`${post.title}`}
-                                />
-                                <CardContent className={classes.cardContent}>
-                                    <Typography gutterBottom variant="h5" component="h2">
-                                        {post.title}
-                                    </Typography>
-                                    <Typography>
-                                        {post.body.length > 50 ? post.body.slice(0, 50) + ' ...' : post.body}
-                                    </Typography>
-                                </CardContent>
-                                <CardActions>
-                                    <Link href={"/posts[postId]"} as={`/posts/${post.id}`}>
-                                        <Button size="small" variant="contained" color="primary">
-                                            View
+                                        <Typography>
+                                            {post.body && post.body.length > 20
+                                                ? post.body.slice(0, 20) + ' ...' :
+                                                post.body}
+                                        </Typography>
+                                    </CardContent>
+                                    <CardActions>
+                                        <Link href={"/posts[postId]"} as={`/posts/${post.id}`}>
+                                            <Button size="small" variant="contained" color="primary">
+                                                View
+                                            </Button>
+                                        </Link>
+                                        <Button onClick={() => deletePost(post.id)}
+                                                variant="contained"
+                                                size="small" color="secondary">
+                                            Remove
                                         </Button>
-                                    </Link>
-                                    <Button size="small" color="primary">
-                                        Edit
-                                    </Button>
-                                </CardActions>
-                            </Card>
-                        </Grid>
-                    ))}
-                </Grid>
-            </Container>
+                                    </CardActions>
+                                </Card>
+                            </Grid>
+                        ))}
+                    </Grid>
+                </Container>
+            </>
         </BlogWrapper>
-
     )
 }
-export default Index;
+export default Blog;
 
+
+// Material UI styles
 const useStyles = makeStyles((theme) => ({
     icon: {
         marginRight: theme.spacing(2),
@@ -116,16 +120,3 @@ const useStyles = makeStyles((theme) => ({
         padding: theme.spacing(6),
     },
 }));
-
-/*<BlogWrapper>
-    <h1>Main</h1>
-    <button onClick={() => Router.push('/posts/new')}>Create post</button>
-    {posts.map((post: PostType) => {
-        return <div key={post.id}>
-            <Link href={"/posts[postId]"} as={`/posts/${post.id}`}>
-                <a>{post.title}</a>
-            </Link>
-            <button onClick={() => deletePost(post.id)}>X</button>
-        </div>
-    })}
-</BlogWrapper>*/

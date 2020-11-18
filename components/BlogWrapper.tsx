@@ -1,24 +1,31 @@
 import Link from "next/link";
-import Toolbar from "@material-ui/core/Toolbar";
 import LocalLibraryIcon from "@material-ui/icons/LocalLibrary";
-import Typography from "@material-ui/core/Typography";
-import AppBar from "@material-ui/core/AppBar";
-import React from "react";
-import {CssBaseline} from "@material-ui/core";
+import React, {ReactChild, ReactChildren} from "react";
+import {AppBar, Button, createStyles, IconButton, makeStyles, Theme, Toolbar, Typography} from "@material-ui/core";
 
-const BlogWrapper = ({children}) => {
+
+interface AuxProps {
+    children: ReactChild | ReactChildren;
+}
+
+const BlogWrapper = ({children}: AuxProps): JSX.Element => {
+
+    const classes = useStyles();
     return (
         <>
-            <CssBaseline/>
-            <AppBar position="relative">
+            <AppBar position="static">
                 <Toolbar>
                     <Link href={"/"}>
-                        <LocalLibraryIcon cursor={'pointer'}/>
+                        <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
+                            <LocalLibraryIcon fontSize={"large"}/>
+                        </IconButton>
                     </Link>
+                    <Typography variant="h6" className={classes.title}>
+                        <Link href={"/"}><Button color="inherit">Home</Button></Link>
+                    </Typography>
+
                     <Link href={"/posts/new"}>
-                        <Typography style={{cursor: "pointer", marginLeft: "16px"}} variant="h6" color="inherit" noWrap>
-                            Write new post
-                        </Typography>
+                        <Button color="inherit" variant={"outlined"}>Create new post</Button>
                     </Link>
                 </Toolbar>
             </AppBar>
@@ -32,12 +39,16 @@ const BlogWrapper = ({children}) => {
 export default BlogWrapper;
 
 
-// <>
-//     <nav>
-//         <Link href={"/"}><a>Main Page</a></Link>
-//         <Link href={"/posts/new"}><a>Create new Post</a></Link>
-//     </nav>
-//     <main>
-//         {children}
-//     </main>
-// </>
+const useStyles = makeStyles((theme: Theme) =>
+    createStyles({
+        root: {
+            flexGrow: 1,
+        },
+        menuButton: {
+            marginRight: theme.spacing(2),
+        },
+        title: {
+            flexGrow: 1,
+        },
+    }),
+);

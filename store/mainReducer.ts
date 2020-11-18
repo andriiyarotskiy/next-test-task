@@ -1,12 +1,16 @@
-import {Dispatch} from "redux";
 import {API} from "../api/api";
-import {ThunkAction, ThunkDispatch} from "redux-thunk";
 import {AppRootStateType} from "./store";
+import {Dispatch} from "redux";
+import {ThunkAction, ThunkDispatch} from "redux-thunk";
+import {getUserPostTC} from "./postReducer";
 
 type InitialStateType = typeof initialState
+
+
 export type ActionsTypes = ReturnType<typeof setPosts>
     | ReturnType<typeof createPost>
     | ReturnType<typeof deletePost>
+    | ReturnType<typeof updatePost>
 
 
 let initialState = {
@@ -24,6 +28,9 @@ const mainReducer = (state: InitialStateType = initialState, action: ActionsType
         case 'DELETE-POST': {
             return {...state, posts: state.posts.filter(p => p.id !== action.id)}
         }
+        case 'UPDATE-POST': {
+            return {...state, posts: state.posts.map(p => p.id === action.id ? action.body : p)}
+        }
         default :
             return state
     }
@@ -39,12 +46,15 @@ export const createPost = (newPost) => ({
 export const deletePost = (id) => ({
     type: 'DELETE-POST', id
 }) as const
+export const updatePost = (id, body) => ({
+    type: 'UPDATE-POST', id, body
+}) as const
 
 //Thunk
 export const fetchPostsTC = () => async (dispatch: Dispatch) => {
     try {
-        const response = await API.getAllPosts()
-        dispatch(setPosts(response.data))
+        const posts = await API.getAllPosts()
+        dispatch(setPosts(posts))
     } catch (e) {
     }
 }
@@ -52,19 +62,34 @@ export const fetchPostsTC = () => async (dispatch: Dispatch) => {
 export const createPostTC = (newPost) => async (dispatch: Dispatch) => {
     try {
         const response = await API.createPost(newPost)
-        dispatch(createPost(response.data))
+        if (response){
+            dispatch(createPost(newPost))
+        }
     } catch (e) {
     }
 }
-type ThunkType = ThunkAction<void, AppRootStateType, unknown, ActionsTypes>
 
-export const deletePostTC = (id): ThunkType => async (dispatch: ThunkDispatch<AppRootStateType, unknown, ActionsTypes>) => {
+
+export const deletePostTC = (id: number): ThunkType => async (dispatch: ThunkDispatch<AppRootStateType, unknown, ActionsTypes>) => {
     try {
         const response = await API.deletePost(id)
-        dispatch(deletePost(response.data))
+        if (response){
+            dispatch(deletePost(id))
+        }
         await dispatch(fetchPostsTC())
     } catch (e) {
     }
 }
 
+export const updatePostTC = (id: string, body: {body: string, title: string}): ThunkType => async (dispatch: ThunkDispatch<AppRootStateType, unknown, ActionsTypes>) => {
+    try {
+        const response = await API.updatePost(id, body)
+        dispatch(updatePost(id, response.data))
+        await dispatch(getUserPostTC(id))
+        await dispatch(fetchPostsTC())
+    } catch (e) {
+    }
+}
+// Thunk Types
+type ThunkType = ThunkAction<void, AppRootStateType, unknown, ActionsTypes>
 export default mainReducer;

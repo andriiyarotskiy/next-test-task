@@ -1,11 +1,11 @@
+import {API, CommentsType, PostType} from "../api/api";
 import {Dispatch} from "redux";
-import {API} from "../api/api";
 
 type InitialStateType = typeof initialState
 export type ActionsTypes = ReturnType<typeof setUserPost>
 
 let initialState = {
-    post: {}
+    post: {} as PostType<CommentsType>
 }
 
 const postReducer = (state: InitialStateType = initialState, action: ActionsTypes): InitialStateType => {
@@ -18,16 +18,16 @@ const postReducer = (state: InitialStateType = initialState, action: ActionsType
     }
 }
 
-export const setUserPost = (post) => ({
+export const setUserPost = (post: PostType<CommentsType>) => ({
     type: 'SET-USER-POST', post
 })
 
 //Thunk
 export const getUserPostTC = (id: string | string[]) => async (dispatch: Dispatch) => {
+    const postId = Number(id)
     try {
-        const postId = Number(id)
-        const response = await API.getPost(postId)
-        dispatch(setUserPost(response.data))
+        const post = await API.getPost(postId)
+        dispatch(setUserPost(post))
     } catch (e) {
     }
 }

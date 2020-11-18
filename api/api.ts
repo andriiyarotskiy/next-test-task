@@ -1,22 +1,37 @@
 import axios from 'axios';
 
-// https://simple-blog-api.crew.red/
-
 const instance = axios.create({
     baseURL: "https://simple-blog-api.crew.red/",
 })
 
 export const API = {
     getAllPosts() {
-        return instance.get("posts");
+        return instance.get<Array<PostType<{}>>>("posts").then(r => r.data); //.then(r => r.data)
     },
     getPost(id: number) {
-        return instance.get(`posts/${id}?_embed=comments`);
+        return instance.get<PostType<CommentsType>>(`posts/${id}?_embed=comments`).then(r => r.data);
     },
-    createPost(body) {
-        return instance.post(`posts`, body);
+    createPost(newPost: PostType<{}>) {
+        return instance.post<PostType<{}>>(`posts`, newPost).then(r => r.data);
     },
-    deletePost(id) {
-        return instance.delete(`posts/${id}`);
+    deletePost(id: number) {
+        return instance.delete<{}>(`posts/${id}`).then(r => r.data);
     },
+    updatePost(id, body) {
+        return instance.put<PostType<{}>>(`posts/${id}`, body);
+    },
+}
+
+
+export type CommentsType = {
+    postId: number
+    body: string
+    id: number
+}
+
+export type PostType<T> = {
+    title: string
+    body: string
+    id: number
+    comments?: Array<T>
 }
