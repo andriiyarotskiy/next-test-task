@@ -4,6 +4,7 @@
 /node_modules
 /.pnp
 .pnp.js
+.idea
 /.idea
 
 # testing
@@ -33,3 +34,4 @@ yarn-error.log*
 
 # vercel
 .vercel
+'.idea' 
