@@ -1,10 +1,9 @@
 import {useDispatch} from "react-redux";
-import React, {useCallback, useState} from "react";
+import React, {ChangeEvent, useCallback, useState} from "react";
 import {createPostTC} from "../../store/mainReducer";
 import BlogWrapper from "../../components/BlogWrapper";
 import styled from "styled-components";
-import { Input, TextField, Button } from "@material-ui/core";
-
+import {Input, TextField, Button} from "@material-ui/core";
 
 
 const NewPost = React.memo(() => {
@@ -16,32 +15,32 @@ const NewPost = React.memo(() => {
     })
     const createPostClickHandler = useCallback(() => {//
         dispatch(createPostTC(value))
-    },[value])
+    }, [value])
 
-    const onChangeInput  = useCallback((e) =>{//
-        setValue({...value, title: e.currentTarget.value})
-    },[setValue, value])
 
-    const onChangeTextArea = useCallback((e) => {
-        setValue({...value, body: e.currentTarget.value})
-    },[setValue, value])
+    const onChangeHandler = (event: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+        setValue({...value, [event.target.name]: event.target.value})
+    }
 
     return (
         <BlogWrapper>
             <Container>
                 <h1>CREATE POST!</h1>
                 <div>
-                    <Input placeholder="Title" value={value.title} onChange={onChangeInput}/>
+                    <Input placeholder="Title"
+                           name="title"
+                           value={value.title} onChange={onChangeHandler}/>
                 </div>
                 <div>
                     <TextFieldStyle
+                        name="body"
                         id="outlined-multiline-static"
                         label="Multiline"
                         multiline
                         rows={4}
                         variant="outlined"
                         value={value.body}
-                        onChange={onChangeTextArea}
+                        onChange={onChangeHandler}
                     />
                 </div>
                 <ButtonStyle variant={'contained'} color={"primary"}
